@@ -41,19 +41,35 @@
 //     }
 // }
 pipeline {
-  agent any
-
-  stages {
-    stage('Checkout') {
-      steps {
-        script {
-          checkout scm
-          sh 'git branch -a'
-        }
-      }
+    agent any
+    tools {
+        git 'Default'               // اسم الـ Git tool اللي ضبطناه في الخطوة 1
+        sonarScanner 'SonarScanner'  // اسم الـ SonarQube Scanner tool اللي ضبطناه في الخطوة 4
     }
-    // باقي المراحل
-  }
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('SonarQube Analysis') {
+            environment {
+                scannerHome = tool 'SonarScanner'
+            }
+            steps {
+                withSonarQubeEnv('MySonarQube') {  // نفس الاسم اللي حطيناه في الخطوة 3
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }
+        }
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 1, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+    }
 }
 
 
