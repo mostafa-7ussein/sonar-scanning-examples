@@ -43,8 +43,8 @@
 pipeline {
     agent any
     tools {
-        git 'Default'               // اسم الـ Git tool اللي ضبطناه في الخطوة 1
-        sonarScanner 'SonarScanner'  // اسم الـ SonarQube Scanner tool اللي ضبطناه في الخطوة 4
+        git 'Default'               // اسم Git tool عندك
+        sonar 'SonarQube Scanner'   // الاسم بالضبط من إعدادات Jenkins
     }
     stages {
         stage('Checkout') {
@@ -54,10 +54,10 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             environment {
-                scannerHome = tool 'SonarScanner'
+                scannerHome = tool 'SonarQube Scanner'
             }
             steps {
-                withSonarQubeEnv('MySonarQube') {  // نفس الاسم اللي حطيناه في الخطوة 3
+                withSonarQubeEnv('MySonarQube') {
                     sh "${scannerHome}/bin/sonar-scanner"
                 }
             }
@@ -71,5 +71,4 @@ pipeline {
         }
     }
 }
-
 
