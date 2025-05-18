@@ -42,26 +42,22 @@
 // }
 pipeline {
     agent any
-    tools {
-        git 'Default'               // اسم Git tool عندك
-        sonar 'SonarQube Scanner'   // الاسم بالضبط من إعدادات Jenkins
-    }
+
     stages {
         stage('Checkout') {
             steps {
                 checkout scm
             }
         }
+
         stage('SonarQube Analysis') {
-            environment {
-                scannerHome = tool 'SonarQube Scanner'
-            }
             steps {
-                withSonarQubeEnv('MySonarQube') {
-                    sh "${scannerHome}/bin/sonar-scanner"
+                withSonarQubeEnv('MySonarQubeServer') {
+                    sh 'sonar-scanner'
                 }
             }
         }
+
         stage('Quality Gate') {
             steps {
                 timeout(time: 1, unit: 'MINUTES') {
