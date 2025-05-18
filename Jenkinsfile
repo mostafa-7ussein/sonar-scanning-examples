@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         SONAR_PROJECT_KEY = 'my-sample-project'   // غيره حسب مشروعك
-        SONAR_HOST_URL = 'http://localhost:5100'  // لو Jenkins و Sonar على نفس السيرفر
+        SONAR_HOST_URL = 'http://localhost:5200'  // لو Jenkins و Sonar على نفس السيرفر
     }
 
     stages {
