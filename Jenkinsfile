@@ -43,42 +43,31 @@
 pipeline {
     agent any
 
-    tools {
-        // اسم الـ JDK المثبت في Jenkins
-        jdk 'JDK11'
-        // اسم أداة Maven لو بتستخدمها
-        maven 'Maven3'
+    environment {
+        // اسم الـ SonarQube Server زي ما معرفته في Jenkins > Manage Jenkins > Configure System > SonarQube servers
+        SONARQUBE_ENV = 'SonarQube'  
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // سحب الكود من Git
                 checkout scm
-            }
-        }
-
-        stage('Build') {
-            steps {
-                // بناء المشروع (مثلاً باستخدام Maven)
-                sh 'mvn clean package'
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
-                // استخدام SonarQube Server المسجل في Jenkins باسم 'SonarQube'
-                withSonarQubeEnv('SonarQube') {
-                    // أمر تشغيل Sonar Scanner، تأكد أنه مثبت في بيئة Jenkins أو مشروعك
-                    sh 'mvn sonar:sonar'
+                withSonarQubeEnv(SONARQUBE_ENV) {
+                    // شغل السونار باستخدام الأمر المناسب (مثلاً mvn sonar:sonar لو مشروع Maven)
+                    sh 'mvn clean verify sonar:sonar'
                 }
             }
         }
 
         stage('Quality Gate') {
             steps {
-                // انتظار نتيجة جودة الكود من SonarQube
                 timeout(time: 1, unit: 'MINUTES') {
+                    // انتظر نتيجة الفحص من SonarQube
                     waitForQualityGate abortPipeline: true
                 }
             }
