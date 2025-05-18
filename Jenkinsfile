@@ -39,7 +39,8 @@
 //             echo "Pipeline failed. Check logs."
 //         }
 //     }
-// }pipeline {
+// }
+pipeline {
   agent any
 
   stages {
